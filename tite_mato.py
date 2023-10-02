@@ -22,8 +22,8 @@ class SnakeGame(QGraphicsView):
         self.timer = QTimer(self)
         self.timer.timeout.connect(self.update_game)
         self.start_game()
-        self.spawn_food()
-
+        self.food = self.spawn_food()
+        
     def keyPressEvent(self, event):
         key = event.key()
 
@@ -53,6 +53,15 @@ class SnakeGame(QGraphicsView):
         if new_head in self.snake or not (0 <= new_head[0] < GRID_WIDTH) or not (0 <= new_head[1] < GRID_HEIGHT):
             self.timer.stop()
             return
+        
+        self.snake.insert(0, new_head)
+  
+        if new_head == self.food:
+            self.food = self.spawn_food()
+        else:
+            self.snake.pop()
+
+        self.print_game()
 
     def spawn_food(self):
         while True:
@@ -76,6 +85,7 @@ class SnakeGame(QGraphicsView):
         self.snake = [(5, 5), (5, 6), (5, 7)]
 
         self.timer.start(300)
+
         #for levels
         self.level_limit = 5
         self.timer_delay = 300
