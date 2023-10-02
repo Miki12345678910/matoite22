@@ -10,6 +10,7 @@ CELL_SIZE = 20
 GRID_WIDTH = 20
 GRID_HEIGHT = 15
 
+
 class SnakeGame(QGraphicsView):
     def __init__(self):
         super().__init__()
@@ -20,8 +21,8 @@ class SnakeGame(QGraphicsView):
 
         self.timer = QTimer(self)
         self.timer.timeout.connect(self.update_game)
-        
         self.start_game()
+        self.spawn_food()
 
     def keyPressEvent(self, event):
         key = event.key()
@@ -36,7 +37,7 @@ class SnakeGame(QGraphicsView):
                 self.direction = key
             elif key == Qt.Key_Down and self.direction != Qt.Key_Up:
                 self.direction = key
-    
+
     def update_game(self):
         head_x, head_y = self.snake[0]
 
@@ -49,13 +50,9 @@ class SnakeGame(QGraphicsView):
         elif self.direction == Qt.Key_Down:
             new_head = (head_x, head_y + 1)
 
-<<<<<<< Updated upstream
-=======
         if new_head in self.snake or not (0 <= new_head[0] < GRID_WIDTH) or not (0 <= new_head[1] < GRID_HEIGHT):
             self.timer.stop()
             return
-        
-
 
     def spawn_food(self):
         while True:
@@ -63,17 +60,12 @@ class SnakeGame(QGraphicsView):
             y = random.randint(0, GRID_HEIGHT -1)
             if (x,y) not in self.snake:
                 return x,y
-        
-
->>>>>>> Stashed changes
-        self.snake.insert(0, new_head)
-  
-        self.snake.pop()    
-
-        self.print_game()
 
     def print_game(self):
         self.scene().clear()
+
+        fx, fy = self.food
+        self.scene().addRect(fx * CELL_SIZE, fy * CELL_SIZE,CELL_SIZE,CELL_SIZE, QPen(Qt.black),QBrush(Qt.red))
 
         for segment in self.snake:
             x, y = segment
@@ -84,14 +76,11 @@ class SnakeGame(QGraphicsView):
         self.snake = [(5, 5), (5, 6), (5, 7)]
 
         self.timer.start(300)
-<<<<<<< Updated upstream
-=======
         #for levels
         self.level_limit = 5
         self.timer_delay = 300
 
         self.timer.start(self.timer_delay)
->>>>>>> Stashed changes
 
 def main():
     app = QApplication(sys.argv)
