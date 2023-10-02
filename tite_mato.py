@@ -21,8 +21,8 @@ class SnakeGame(QGraphicsView):
 
         self.timer = QTimer(self)
         self.timer.timeout.connect(self.update_game)
-        
         self.start_game()
+        self.spawn_food()
 
     def keyPressEvent(self, event):
         key = event.key()
@@ -37,7 +37,7 @@ class SnakeGame(QGraphicsView):
                 self.direction = key
             elif key == Qt.Key_Down and self.direction != Qt.Key_Up:
                 self.direction = key
-    
+
     def update_game(self):
         head_x, head_y = self.snake[0]
 
@@ -62,8 +62,6 @@ class SnakeGame(QGraphicsView):
             self.snake.pop()
 
         self.print_game()
-        
-        
 
     def spawn_food(self):
         while True:
