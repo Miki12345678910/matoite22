@@ -49,6 +49,20 @@ class SnakeGame(QGraphicsView):
         elif self.direction == Qt.Key_Down:
             new_head = (head_x, head_y + 1)
 
+        if new_head in self.snake or not (0 <= new_head[0] < GRID_WIDTH) or not (0 <= new_head[1] < GRID_HEIGHT):
+            self.timer.stop()
+            return
+        
+        
+
+    def spawn_food(self):
+        while True:
+            x = random.randint(0, GRID_WIDTH -1)
+            y = random.randint(0, GRID_HEIGHT -1)
+            if (x,y) not in self.snake:
+                return x,y
+        
+
         self.snake.insert(0, new_head)
   
         self.snake.pop()    
@@ -57,6 +71,9 @@ class SnakeGame(QGraphicsView):
 
     def print_game(self):
         self.scene().clear()
+
+        fx, fy = self.food
+        self.scene().addRect(fx * CELL_SIZE, fy * CELL_SIZE,CELL_SIZE,CELL_SIZE, QPen(Qt.black),QBrush(Qt.red))
 
         for segment in self.snake:
             x, y = segment
@@ -67,6 +84,11 @@ class SnakeGame(QGraphicsView):
         self.snake = [(5, 5), (5, 6), (5, 7)]
 
         self.timer.start(300)
+        #for levels
+        self.level_limit = 5
+        self.timer.delay = 300
+
+        self.timer.start(self.timer_delay)
 
 def main():
     app = QApplication(sys.argv)
