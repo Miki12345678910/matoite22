@@ -10,6 +10,7 @@ CELL_SIZE = 20
 GRID_WIDTH = 20
 GRID_HEIGHT = 15
 
+
 class SnakeGame(QGraphicsView):
     def __init__(self):
         super().__init__()
@@ -53,6 +54,15 @@ class SnakeGame(QGraphicsView):
             self.timer.stop()
             return
         
+        self.snake.insert(0, new_head)
+  
+        if new_head == self.food:
+            self.food = self.spawn_food()
+        else:
+            self.snake.pop()
+
+        self.print_game()
+        
         
 
     def spawn_food(self):
@@ -61,13 +71,6 @@ class SnakeGame(QGraphicsView):
             y = random.randint(0, GRID_HEIGHT -1)
             if (x,y) not in self.snake:
                 return x,y
-        
-
-        self.snake.insert(0, new_head)
-  
-        self.snake.pop()    
-
-        self.print_game()
 
     def print_game(self):
         self.scene().clear()
@@ -84,9 +87,10 @@ class SnakeGame(QGraphicsView):
         self.snake = [(5, 5), (5, 6), (5, 7)]
 
         self.timer.start(300)
+
         #for levels
         self.level_limit = 5
-        self.timer.delay = 300
+        self.timer_delay = 300
 
         self.timer.start(self.timer_delay)
 
