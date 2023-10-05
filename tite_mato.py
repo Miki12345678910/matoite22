@@ -26,8 +26,8 @@ class SnakeGame(QGraphicsView):
         self.food = self.spawn_food()
         self.game_started = False
         self.init_screen()
-        self.start_game()
-       
+        #self.start_game()
+        #kommentti
     def keyPressEvent(self, event):
         key = event.key()
 
