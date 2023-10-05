@@ -11,6 +11,8 @@ GRID_WIDTH = 20
 GRID_HEIGHT = 15
 
 
+
+
 class SnakeGame(QGraphicsView):
     def __init__(self):
         super().__init__()
@@ -59,11 +61,17 @@ class SnakeGame(QGraphicsView):
 
         if new_head in self.snake or not (0 <= new_head[0] < GRID_WIDTH) or not (0 <= new_head[1] < GRID_HEIGHT):
             self.timer.stop()
+              # Game over text
+            game_over_text = self.scene().addText("Game Over", QFont("Arial", 24))
+            text_width = game_over_text.boundingRect().width()
+            text_x = (self.width() - text_width) / 2
+            game_over_text.setPos(text_x, GRID_HEIGHT * CELL_SIZE / 2)
             return
         
         self.snake.insert(0, new_head)
   
         if new_head == self.food:
+            self.score += 1
             self.food = self.spawn_food()
         else:
             self.snake.pop()
@@ -86,12 +94,20 @@ class SnakeGame(QGraphicsView):
         for segment in self.snake:
             x, y = segment
             self.scene().addRect(x * CELL_SIZE, y * CELL_SIZE, CELL_SIZE, CELL_SIZE, QPen(Qt.black), QBrush(Qt.black))
+        
+        self.scene().addText(f"Score: {self.score}", QFont("Arial", 12))
+        
+
+        
 
     def start_game(self):
         self.direction = Qt.Key_Right
         self.snake = [(5, 5), (5, 6), (5, 7)]
 
         self.timer.start(300)
+
+        # for score calculation
+        self.score = 0
 
         #for levels
         self.level_limit = 5
@@ -104,6 +120,8 @@ class SnakeGame(QGraphicsView):
         text_width = start_text.boundingRect().width()
         text_x = (self.width() - text_width) / 5
         start_text.setPos(text_x, GRID_HEIGHT * CELL_SIZE / 2)
+
+      
 
 def main():
     app = QApplication(sys.argv)
