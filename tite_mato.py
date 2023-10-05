@@ -16,16 +16,18 @@ GRID_HEIGHT = 15
 class SnakeGame(QGraphicsView):
     def __init__(self):
         super().__init__()
-
+        self.snake = []
         self.setScene(QGraphicsScene(self))
         self.setRenderHint(QPainter.Antialiasing)
         self.setSceneRect(0, 0, CELL_SIZE * GRID_WIDTH, CELL_SIZE * GRID_HEIGHT)
 
         self.timer = QTimer(self)
         self.timer.timeout.connect(self.update_game)
-        self.start_game()
         self.food = self.spawn_food()
-        
+        self.game_started = False
+        self.init_screen()
+        self.start_game()
+       
     def keyPressEvent(self, event):
         key = event.key()
 
@@ -71,8 +73,12 @@ class SnakeGame(QGraphicsView):
         self.snake.insert(0, new_head)
   
         if new_head == self.food:
-            self.score += 1
             self.food = self.spawn_food()
+            self.score += 1
+            if self.score == self.level_limit:
+                self.level_limit += 5
+                self.timer_delay -= 50
+                self.timer.setInterval(self.timer_delay)
         else:
             self.snake.pop()
 
@@ -90,7 +96,7 @@ class SnakeGame(QGraphicsView):
 
         fx, fy = self.food
         self.scene().addRect(fx * CELL_SIZE, fy * CELL_SIZE,CELL_SIZE,CELL_SIZE, QPen(Qt.black),QBrush(Qt.red))
-
+        self.scene().addText(f"Score: {self.score}",QFont("Arial", 12))
         for segment in self.snake:
             x, y = segment
             self.scene().addRect(x * CELL_SIZE, y * CELL_SIZE, CELL_SIZE, CELL_SIZE, QPen(Qt.black), QBrush(Qt.black))
@@ -103,11 +109,10 @@ class SnakeGame(QGraphicsView):
     def start_game(self):
         self.direction = Qt.Key_Right
         self.snake = [(5, 5), (5, 6), (5, 7)]
-
+        self.score = 0
         self.timer.start(300)
 
         # for score calculation
-        self.score = 0
 
         #for levels
         self.level_limit = 5
@@ -120,8 +125,6 @@ class SnakeGame(QGraphicsView):
         text_width = start_text.boundingRect().width()
         text_x = (self.width() - text_width) / 5
         start_text.setPos(text_x, GRID_HEIGHT * CELL_SIZE / 2)
-
-      
 
 def main():
     app = QApplication(sys.argv)
